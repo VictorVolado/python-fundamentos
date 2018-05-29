@@ -1,0 +1,55 @@
+*{
+	background-color:  #e6f2ff;
+
+
+}
+
+#btnRegresar{
+	float:right;
+	position: relative;	
+	border-radius: 7px;
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+	box-shadow: none;
+	border-style: double;
+	margin-right: 70px;
+	background-color: #007a99;
+	color:white;
+	padding: 10px 10px;
+
+}
+
+#botonPDF{
+	float:left;
+	position: relative;	
+	border-radius: 7px;
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+	box-shadow: none;
+	border-style: double;
+	margin-right: 70px;
+	background-color: #007a99;
+	color:white;
+	margin-right: 20px;
+	padding: 10px 10px;
+
+}
+li{
+	margin-top: 2px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-style: solid;
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;	
+	border-radius: 5px;
+	background-color: #b3ccff;
+
+}
+ li button{
+	float:right;
+	border-radius: 7px;
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+	box-shadow: none;
+	border-style: double;
+	
+	background-color: #007a99;
+	color:white;
+		
+}	
