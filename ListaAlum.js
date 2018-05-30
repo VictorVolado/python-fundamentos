@@ -29,10 +29,11 @@ function inicia() {
   	    token = require('electron').remote.getGlobal('informacion').token,
         usuario = require('electron').remote.getGlobal('informacion').usuario,
         periodo = require('electron').remote.getGlobal('informacion').periodo,
-        materia = require('electron').remote.getGlobal('informacion').claveMateria,
+        materia = require('electron').remote.getGlobal('informacion').clave,
         nombreMateria = require('electron').remote.getGlobal('informacion').nombreMateria,
         grupo = require('electron').remote.getGlobal('informacion').grupo;
       
+        console.log(token,usuario,periodo,materia,nombreMateria,grupo);
    
 
     $("#titulo").append('<br>' + materia + ' ' + nombreMateria);

@@ -18,21 +18,23 @@ var usuarioValida = require('electron').remote.getGlobal('informacion').token;
 var usuario = require('electron').remote.getGlobal('informacion').usuario;
 var periodo = require('electron').remote.getGlobal('informacion').periodo;
 
-var materias = new Array(10);
+var materias = new Array(10);  
 
-function info(cveMateria, nombreMateria, grupos) {
+
+function info(cveMateria, nombreMateria, grupo) {
     this.cveMateria = cveMateria;
     this.nombreMateria = nombreMateria;
     this.grupo = grupo;
 }
 
 function inicia(){
- 
   var claveMateria="";
   var claveGrupo="";
   var nombreMateria="";
   var cantidadFaltas="";
   var resultado = '';
+  var grupo="";
+   
 
   $.ajax({
        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
@@ -40,13 +42,16 @@ function inicia(){
         success: function (data) {
 
             if (data.respuesta) {
+                 
                 for (var i = 1; i < data.grupos.length; i++) {
-                    cveMateria = data.grupos[i].clavemateria;
+                    claveMateria=data.grupos[i].clavemateria;
                     nombreMateria = data.grupos[i].materia;
                     grupo = data.grupos[i].grupo;
-                    contFaltas(cveMateria,nombreMateria,grupo);
+
+                    materias[i] = new info(claveMateria, nombreMateria, grupo);
+                    contFaltas(claveMateria,nombreMateria,grupo);
                     
-;                   resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
+;                   resultado = "<li>" + claveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
                     $("#lstGrupos").append(resultado);
                 }
             } else {
@@ -97,7 +102,7 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
 
   function btnLista() {
 
-    require('electron').remote.getGlobal('informacion').claveMateria = materias[this.id].cveMateria;
+    require('electron').remote.getGlobal('informacion').clave = materias[this.id].claveMateria;
     require('electron').remote.getGlobal('informacion').nombreMateria = materias[this.id].nombreMateria;
     require('electron').remote.getGlobal('informacion').grupo = materias[this.id].grupo;
 
