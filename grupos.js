@@ -13,44 +13,45 @@ botonPDF.addEventListener('click',function(event){
     ipc.send('print-to-pdf')
 
 });
-
-
-function datosGrupos(claveMateria,claveGrupo,nombreMateria){
-  this.claveMateria = claveMateria;
-  this.claveGrupo = claveGrupo;
-  this.nombreMateria = nombreMateria;
-}
-
-var materias;
-
-function inicia(){
-  var usuarioValida = require('electron').remote.getGlobal('informacion').token;
-  var usuario = require('electron').remote.getGlobal('informacion').usuario;
-  var periodo = require('electron').remote.getGlobal('informacion').periodo;
-  var claveMateria="";
-  var claveGrupo="";
-  var nombreMateria="";
-  var cantidadFaltas="";
-
 function info(cveMateria, nombreMateria, grupo) {
     this.cveMateria = cveMateria;
     this.nombreMateria = nombreMateria;
     this.grupo = grupo;
 }
 
+function datosGrupos(claveMateria,claveGrupo,nombreMateria){
+  this.claveMateria = claveMateria;
+  this.claveGrupo = claveGrupo;
+  this.nombreMateria = nombreMateria;
+}
+  var usuarioValida = require('electron').remote.getGlobal('informacion').token;
+  var usuario = require('electron').remote.getGlobal('informacion').usuario;
+  var periodo = require('electron').remote.getGlobal('informacion').periodo;
+
+
+var materias;
+
+function inicia(){
+  
+  var claveMateria="";
+  var claveGrupo="";
+  var nombreMateria="";
+  var cantidadFaltas="";
+  var a;
+
   $.ajax({
        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
        dataType: 'json',
+       async: false,
         success: function (data) {
 
             if (data.respuesta) {
+                console.log(data)
                 var resultado = '';
-                console.log("jaja")
                 materias = new Array(data.grupos[0].cantidad);
 
                 for (var i = 1; i < data.grupos.length; i++) {
                     cveMateria = data.grupos[i].clavemateria;
-                    console.log(cveMateria)
                     nombreMateria = data.grupos[i].materia;
                     grupo = data.grupos[i].grupo;
 
@@ -58,27 +59,42 @@ function info(cveMateria, nombreMateria, grupo) {
                     resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
                     
                     $("#lstGrupos").append(resultado);
+                    contFaltas(cveMateria,nombreMateria,grupo).then((data) => {
+                        a = data;
+                        console.log(a);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 }
             } else {
                 alert('Error');
             }
         }
-    });
+    });  
+     console.log(materias[1].grupo);
+
+
 }
 function contFaltas (cveMateria,nombreMateria,grupo){
 
-    $.ajax({
-        url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadfaltasgrupo.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo+'&materia='+cveMateria+'&grupo='+grupo,
-        dataType: 'json',
-        success: function (data){
-            if(data.respuesta){
-                cantidadFaltas = data.cantidad;
-            }else{
-                console.log("Sin Respuesta");
+    return new Promise((resolve,reject) => {
+        var cantidadFaltas;
+        $.ajax({
+            url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadfaltasgrupo.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo+'&materia='+cveMateria+'&grupo='+grupo,
+            dataType: 'json',
+            success: function (data){
+                if(data.respuesta){
+                    cantidadFaltas = data.cantidad;
+                    resolve(cantidadFaltas);
+                }else{
+                    reject('error');
+                }
             }
-            return cantidadFaltas;
-        }
+        });
+        
     });
+   
+
 }
 
 function  contAsistencias (cveMateria,nombreMateria,grupo){
@@ -88,18 +104,19 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
         dataType: 'json',
         success: function (data){
             if(data.respuesta){
+                var i;
+                i++;
                 var faltas = 0;
                 cantidadAsistencias = data.cantidad;
+                return cantidadAsistencias;
             }else{
                 console.log("Sin Respuesta");
             }
-            return cantidadAsistencias;
+           
         }
     });
 
-}
-   
-   
+}     
 
   let pantallaPase;
 
