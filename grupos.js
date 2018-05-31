@@ -14,12 +14,23 @@ botonPDF.addEventListener('click',function(event){
 
 });
 
-var usuarioValida = require('electron').remote.getGlobal('informacion').token;
-var usuario = require('electron').remote.getGlobal('informacion').usuario;
-var periodo = require('electron').remote.getGlobal('informacion').periodo;
 
-var materias = new Array(10);  
+function datosGrupos(claveMateria,claveGrupo,nombreMateria){
+  this.claveMateria = claveMateria;
+  this.claveGrupo = claveGrupo;
+  this.nombreMateria = nombreMateria;
+}
 
+var materias;
+
+function inicia(){
+  var usuarioValida = require('electron').remote.getGlobal('informacion').token;
+  var usuario = require('electron').remote.getGlobal('informacion').usuario;
+  var periodo = require('electron').remote.getGlobal('informacion').periodo;
+  var claveMateria="";
+  var claveGrupo="";
+  var nombreMateria="";
+  var cantidadFaltas="";
 
 function info(cveMateria, nombreMateria, grupo) {
     this.cveMateria = cveMateria;
@@ -27,31 +38,25 @@ function info(cveMateria, nombreMateria, grupo) {
     this.grupo = grupo;
 }
 
-function inicia(){
-  var claveMateria="";
-  var claveGrupo="";
-  var nombreMateria="";
-  var cantidadFaltas="";
-  var resultado = '';
-  var grupo="";
-   
-
   $.ajax({
        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
        dataType: 'json',
         success: function (data) {
 
             if (data.respuesta) {
-                 
+                var resultado = '';
+                console.log("jaja")
+                materias = new Array(data.grupos[0].cantidad);
+
                 for (var i = 1; i < data.grupos.length; i++) {
-                    claveMateria=data.grupos[i].clavemateria;
+                    cveMateria = data.grupos[i].clavemateria;
+                    console.log(cveMateria)
                     nombreMateria = data.grupos[i].materia;
                     grupo = data.grupos[i].grupo;
 
-                    materias[i] = new info(claveMateria, nombreMateria, grupo);
-                    contFaltas(claveMateria,nombreMateria,grupo);
+                    materias[i] = new info(cveMateria, nombreMateria, grupo);
+                    resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
                     
-;                   resultado = "<li>" + claveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
                     $("#lstGrupos").append(resultado);
                 }
             } else {
@@ -59,9 +64,7 @@ function inicia(){
             }
         }
     });
-    
 }
-
 function contFaltas (cveMateria,nombreMateria,grupo){
 
     $.ajax({
@@ -96,13 +99,13 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
 
 }
    
-
+   
 
   let pantallaPase;
 
   function btnLista() {
 
-    require('electron').remote.getGlobal('informacion').clave = materias[this.id].claveMateria;
+    require('electron').remote.getGlobal('informacion').claveMateria = materias[this.id].cveMateria;
     require('electron').remote.getGlobal('informacion').nombreMateria = materias[this.id].nombreMateria;
     require('electron').remote.getGlobal('informacion').grupo = materias[this.id].grupo;
 
@@ -113,6 +116,7 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
         slashes: true
     }));
 
+    //pantallaDetalle.webContents.openDevTools();
     pantallaPase.show();
 }
 
