@@ -31,70 +31,81 @@ function datosGrupos(claveMateria,claveGrupo,nombreMateria){
 
 var materias;
 
-function inicia(){
-  
+async function inicia(){
   var claveMateria="";
   var claveGrupo="";
   var nombreMateria="";
   var cantidadFaltas="";
   var a;
   var f;
+  const grupos = await primerPromesa();
+  grupos.shift();
 
-  $.ajax({
-       url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
-       dataType: 'json',
-       async: false,
-        success: function (data) {
+  const faltasPromises = [];
+  const asistenciasPromises = [];
+  for (const grupo of grupos) {
+    faltasPromises.push(contFaltas(grupo.clavemateria, grupo.materia, grupo.grupo));
+    asistenciasPromises.push(contAsistencias(grupo.clavemateria, grupo.materia, grupo.grupo));
+  }
+  const faltas = await Promise.all(faltasPromises);
+  const asistencias = await Promise.all(asistenciasPromises);
+  for (let index = 0, length = grupos.length; index < length; index++) {
+      const group = grupos[index];
+      const { clavemateria, materia, grupo } = group;
+      let resultado = "<li>" + clavemateria + '  ' + materia + '  ' + grupo + ' ' +' Faltas: '+ faltas[index] + ' ' +' Asistencias: '+ asistencias[index] + '<button id=' + index + '>Ver alumnos</button>';
+      $("#lstGrupos").append(resultado);
+  }
+}
 
-            if (data.respuesta) {
-                var resultado = '';
-                materias = new Array(data.grupos[0].cantidad);
+/*
+for (var i = 1; i < data.grupos.length; i++) {
+    cveMateria = data.grupos[i].clavemateria;
+    nombreMateria = data.grupos[i].materia;
+    grupo = data.grupos[i].grupo;
 
-                for (var i = 1; i < data.grupos.length; i++) {
-                    cveMateria = data.grupos[i].clavemateria;
-                    nombreMateria = data.grupos[i].materia;
-                    grupo = data.grupos[i].grupo;
+    materias[i] = new info(cveMateria, nombreMateria, grupo);
+   
+    contFaltas(cveMateria,nombreMateria,grupo).then((data) => {
+        f = "<li> FALTAS : "+data;
+        $("#faltasAsistencias").append(f);
+    }).catch((err) => {
+        console.log(err);
+    });
 
-                    materias[i] = new info(cveMateria, nombreMateria, grupo);
-                   
-                    contFaltas(cveMateria,nombreMateria,grupo).then((data) => {
-                        f = "<li> FALTAS : "+data;
-                        $("#faltasAsistencias").append(f);
-                    }).catch((err) => {
-                        console.log(err);
-                    });
+    contAsistencias(cveMateria,nombreMateria,grupo).then((data) => {
+        a = "<li> FALTAS : "+data;
+        $("#faltasAsistencias").append(a);
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+*/
 
-                    contAsistencias(cveMateria,nombreMateria,grupo).then((data) => {
-                        a = "<li> FALTAS : "+data;
-                        $("#faltasAsistencias").append(a);
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                    
-                    resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
-                    $("#lstGrupos").append(resultado);
-                  
-                }
-            } else {
-                alert('Error');
-            }
-        }
-    });  
-    
-
-
+function primerPromesa () {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
+        dataType: 'json',
+        async: false,
+         success: function (data) {
+             if (data.respuesta) {
+                 resolve(data.grupos);
+             } else {
+                 alert('Error');
+             }
+         }
+     });
+  });
 }
 function contFaltas (cveMateria,nombreMateria,grupo){
 
     return new Promise((resolve,reject) => {
-        var cantidadFaltas;
         $.ajax({
             url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadfaltasgrupo.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo+'&materia='+cveMateria+'&grupo='+grupo,
             dataType: 'json',
             success: function (data){
                 if(data.respuesta){
-                    cantidadFaltas = data.cantidad;
-                    resolve(cantidadFaltas);
+                    resolve(data.cantidad);
                 }else{
                     reject('error');
                 }
