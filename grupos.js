@@ -38,6 +38,7 @@ function inicia(){
   var nombreMateria="";
   var cantidadFaltas="";
   var a;
+  var f;
 
   $.ajax({
        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienegrupos2.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo,
@@ -46,7 +47,6 @@ function inicia(){
         success: function (data) {
 
             if (data.respuesta) {
-                console.log(data)
                 var resultado = '';
                 materias = new Array(data.grupos[0].cantidad);
 
@@ -56,22 +56,31 @@ function inicia(){
                     grupo = data.grupos[i].grupo;
 
                     materias[i] = new info(cveMateria, nombreMateria, grupo);
-                    resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
-                    
-                    $("#lstGrupos").append(resultado);
+                   
                     contFaltas(cveMateria,nombreMateria,grupo).then((data) => {
-                        a = data;
-                        console.log(a);
+                        f = "<li> FALTAS : "+data;
+                        $("#faltasAsistencias").append(f);
                     }).catch((err) => {
                         console.log(err);
                     });
+
+                    contAsistencias(cveMateria,nombreMateria,grupo).then((data) => {
+                        a = "<li> FALTAS : "+data;
+                        $("#faltasAsistencias").append(a);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                    
+                    resultado = "<li>" + cveMateria + '  ' + nombreMateria + '  ' + grupo + '<button id=' + i + '>Ver alumnos</button>';
+                    $("#lstGrupos").append(resultado);
+                  
                 }
             } else {
                 alert('Error');
             }
         }
     });  
-     console.log(materias[1].grupo);
+    
 
 
 }
@@ -98,23 +107,21 @@ function contFaltas (cveMateria,nombreMateria,grupo){
 }
 
 function  contAsistencias (cveMateria,nombreMateria,grupo){
-  
+    return new Promise((resolve,reject) => {
      $.ajax({
         url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadasistenciasgrupo.php?usuario='+usuario+'&usuariovalida='+usuarioValida+'&periodoactual='+periodo+'&materia='+cveMateria+'&grupo='+grupo,
         dataType: 'json',
         success: function (data){
             if(data.respuesta){
-                var i;
-                i++;
-                var faltas = 0;
                 cantidadAsistencias = data.cantidad;
-                return cantidadAsistencias;
+                resolve(cantidadAsistencias);
             }else{
                 console.log("Sin Respuesta");
             }
            
         }
     });
+});
 
 }     
 
