@@ -31,9 +31,7 @@ function inicia() {
         periodo = require('electron').remote.getGlobal('informacion').periodo,
         materia = require('electron').remote.getGlobal('informacion').claveMateria,
         nombreMateria = require('electron').remote.getGlobal('informacion').nombreMateria,
-        grupo = require('electron').remote.getGlobal('informacion').grupo;
-      
-   
+        grupo = require('electron').remote.getGlobal('informacion').grupo;   
 
     $("#titulo").append('<br>' + materia + ' ' + nombreMateria);
 
@@ -66,8 +64,9 @@ function inicia() {
                     $("#lstAlumnos").append(resultado);
                 }
             } else {
-                alert('Error');
+                console.log(data)
             }
+
         }
     })
 

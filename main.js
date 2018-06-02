@@ -22,10 +22,6 @@ global.informacion ={
   grupo:''
 }
 
-global.informacion2 = {
-  faltas:[],
-  asistensias:[]
-}
 
 ipc.on('print-to-pdf',function(event){
   const pdfPath=path.join(os.tmpdir(),'print.pdf');

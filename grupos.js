@@ -13,11 +13,6 @@ botonPDF.addEventListener('click',function(event){
     ipc.send('print-to-pdf')
 
 });
-function info(cveMateria, nombreMateria, grupo) {
-    this.cveMateria = cveMateria;
-    this.nombreMateria = nombreMateria;
-    this.grupo = grupo;
-}
 
 function datosGrupos(claveMateria,claveGrupo,nombreMateria){
   this.claveMateria = claveMateria;
@@ -29,7 +24,8 @@ function datosGrupos(claveMateria,claveGrupo,nombreMateria){
   var periodo = require('electron').remote.getGlobal('informacion').periodo;
 
 
-var materias;
+
+var materiaArray;
 
 async function inicia(){
   var claveMateria="";
@@ -39,21 +35,29 @@ async function inicia(){
   var a;
   var f;
   const grupos = await primerPromesa();
-  grupos.shift();
 
+  grupos.shift();
+    console.log(grupos)
   const faltasPromises = [];
   const asistenciasPromises = [];
+  materiaArray = [];
+  
   for (const grupo of grupos) {
     faltasPromises.push(contFaltas(grupo.clavemateria, grupo.materia, grupo.grupo));
     asistenciasPromises.push(contAsistencias(grupo.clavemateria, grupo.materia, grupo.grupo));
   }
   const faltas = await Promise.all(faltasPromises);
   const asistencias = await Promise.all(asistenciasPromises);
+  
+
   for (let index = 0, length = grupos.length; index < length; index++) {
       const group = grupos[index];
       const { clavemateria, materia, grupo } = group;
       let resultado = "<li>" + clavemateria + '  ' + materia + '  ' + grupo + ' ' +' Faltas: '+ faltas[index] + ' ' +' Asistencias: '+ asistencias[index] + '<button id=' + index + '>Ver alumnos</button>';
+     
       $("#lstGrupos").append(resultado);
+      materiaArray.push(new datosGrupos(clavemateria,grupo,materia));
+
   }
 }
 
@@ -140,9 +144,9 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
 
   function btnLista() {
 
-    require('electron').remote.getGlobal('informacion').claveMateria = materias[this.id].cveMateria;
-    require('electron').remote.getGlobal('informacion').nombreMateria = materias[this.id].nombreMateria;
-    require('electron').remote.getGlobal('informacion').grupo = materias[this.id].grupo;
+    require('electron').remote.getGlobal('informacion').claveMateria = materiaArray[this.id].claveMateria;
+    require('electron').remote.getGlobal('informacion').nombreMateria = materiaArray[this.id].nombreMateria;
+    require('electron').remote.getGlobal('informacion').grupo = materiaArray[this.id].claveGrupo;
 
     pantallaPase = new BrowserWindow({ width: 700, height: 600 });
     pantallaPase.loadURL(url.format({
