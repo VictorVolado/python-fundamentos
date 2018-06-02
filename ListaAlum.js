@@ -74,18 +74,22 @@ function inicia() {
 
 function onclickaction(b){
 
-       
+    var p1 =b.target.id.charAt(10);
+    var p2 =b.target.id.charAt(11);
+    var f = p1.concat(p2);
+    var f2 = b.target.id.charAt(5).concat(b.target.id.charAt(6))
+    console.log(f);
 
     var incidenciaMandar=(b.target.id.charAt(0));
     if(incidenciaMandar==="A"){
         var numIdAdesaparecer=(b.target.id.charAt(10));
-    var idADesaparecer="Falta"+numIdAdesaparecer;
+    var idADesaparecer="Falta"+f;
    
     document.getElementById(idADesaparecer).style.visibility = 'hidden';
         incidenciaMandar=1;
     }else{
         var numIdAdesaparecer=(b.target.id.charAt(5));
-        var idADesaparecer="Asistencia"+numIdAdesaparecer;
+        var idADesaparecer="Asistencia"+f2;
         
         document.getElementById(idADesaparecer).style.visibility = 'hidden';
         incidenciaMandar=2;
