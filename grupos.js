@@ -37,7 +37,7 @@ async function inicia(){
   const grupos = await primerPromesa();
 
   grupos.shift();
-    console.log(grupos)
+  console.log(grupos)
   const faltasPromises = [];
   const asistenciasPromises = [];
   materiaArray = [];
@@ -128,8 +128,7 @@ function  contAsistencias (cveMateria,nombreMateria,grupo){
         dataType: 'json',
         success: function (data){
             if(data.respuesta){
-                cantidadAsistencias = data.cantidad;
-                resolve(cantidadAsistencias);
+                resolve(data.cantidad);
             }else{
                 console.log("Sin Respuesta");
             }

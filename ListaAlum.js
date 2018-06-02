@@ -10,67 +10,119 @@ const $ = require('jquery'),
 
     botonPDF.style.display ="none"
     ipc.send('print-to-pdf')
-
-});
+    });
 
     let pantallaDetalle;
+function datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno){
+    this.ncontrol = ncontrol;
+    this.nombre = nombre;
+    this.apellidomaterno = apellidomaterno;
+    this.apellidopaterno = apellidopaterno;
+}
 
-var alumnos,
-    token = '',
+var token = '',
     usuario = '',
     periodo = '',
     materia = '',
     nombreMateria = '',
     grupo = '',
     numcontrol = '';
+    var alumnosArray;
 
-function inicia() {
+    async function inicia() {
 
-  	    token = require('electron').remote.getGlobal('informacion').token,
-        usuario = require('electron').remote.getGlobal('informacion').usuario,
-        periodo = require('electron').remote.getGlobal('informacion').periodo,
-        materia = require('electron').remote.getGlobal('informacion').claveMateria,
-        nombreMateria = require('electron').remote.getGlobal('informacion').nombreMateria,
-        grupo = require('electron').remote.getGlobal('informacion').grupo;   
+    token = require('electron').remote.getGlobal('informacion').token,
+    usuario = require('electron').remote.getGlobal('informacion').usuario,
+    periodo = require('electron').remote.getGlobal('informacion').periodo,
+    materia = require('electron').remote.getGlobal('informacion').claveMateria,
+    nombreMateria = require('electron').remote.getGlobal('informacion').nombreMateria,
+    grupo = require('electron').remote.getGlobal('informacion').grupo;   
 
     $("#titulo").append('<br>' + materia + ' ' + nombreMateria);
+   
+    const alumnos = await primerPromesa();
+    alumnos.shift();
+    console.log(alumnos)
+    const faltasPromises = [];
+    const asistenciasPromises = [];
+    alumnosArray = [];
+    
+    for (const alumno of alumnos) {
+      faltasPromises.push(contFaltas(materia, nombreMateria,grupo, alumno.ncontrol));
+      asistenciasPromises.push(contAsistencias(materia,nombreMateria,grupo,alumno.ncontrol));
+      console.log(alumno.ncontrol)
+    }
 
+    const faltas = await Promise.all(faltasPromises);
+    const asistencias = await Promise.all(asistenciasPromises);
+
+    for (let index = 0, length = alumnos.length; index < length; index++) {
+        const alum = alumnos[index];
+        const { ncontrol, nombre, apellidopaterno,apellidomaterno } = alum;
+        var nombrecompleto = nombre + ' ' + apellidopaterno + ' ' + apellidomaterno;
+        console.log(nombrecompleto)
+        let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button onclick=clickaction(b) name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
+        $("#lstAlumnos").append(resultado);
+        alumnosArray.push(new datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno));
   
+    }
+
+}
+
+function primerPromesa () {
+        return new Promise((resolve, reject) => {
     $.ajax({
         url:'http://itculiacan.edu.mx/dadm/apipaselista/data/obtienealumnos2.php?usuario=' + usuario + '&usuariovalida=' + token + '&periodoactual=' + periodo + '&materia=' + materia + '&grupo=' + grupo,
         dataType: 'json',
         success: function (data) {
-            
-            
-            if (data.respuesta) {
-                var resultado = '',
-                    nombre = '',
-                    apellidopaterno = '',
-                    apellidomaterno = '',
-                    nombrecompleto,
-                    t;
-                    
-                alumnos = new Array(t);
-
-                for (var i = 1; i < data.alumnos.length; i++) {
-                    t++;
-                    numcontrol = data.alumnos[i].ncontrol;
-                    nombre = data.alumnos[i].nombre;
-                    apellidopaterno = data.alumnos[i].apellidopaterno;
-                    apellidomaterno = data.alumnos[i].apellidomaterno;
-                    nombrecompleto = nombre + ' ' + apellidopaterno + ' ' + apellidomaterno;
-                    alumnos[i] = numcontrol;
-                    resultado = "<li>" + numcontrol + ' ' + nombrecompleto + '<button onclick=clickaction(b) name=' + i + ' id=Falta' + i + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + i + ' id=Asistencia' + i + ' class="asistencia">Asistencia</button>';
-                    $("#lstAlumnos").append(resultado);
-                }
-            } else {
-                console.log(data)
+            if(data.respuesta){
+                resolve(data.alumnos)
+            }else{
+                console.log("error")
             }
 
         }
-    })
+    });
+});
+}
+
+function contFaltas (cveMateria,nombreMateria,grupo,ncontrol){
+
+    return new Promise((resolve,reject) => {
+        $.ajax({
+            url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadfaltasalumno.php?usuario='+usuario+'&usuariovalida='+token+'&periodoactual='+periodo+'&materia='+materia+'&grupo='+grupo + "&ncontrol="+ncontrol,
+            dataType: 'json',
+            success: function (data){
+                if(data.respuesta){
+                    resolve(data.cantidad);
+                }else{
+                    reject('error');
+                }
+            }
+        });
+        
+    });
+   
 
 }
+
+function  contAsistencias (cveMateria,nombreMateria,grupo,ncontrol){
+    return new Promise((resolve,reject) => {
+     $.ajax({
+        url: 'http://itculiacan.edu.mx/dadm/apipaselista/data/cantidadasistenciasalumno.php?usuario='+usuario+'&usuariovalida='+token+'&periodoactual='+periodo+'&materia='+materia+'&grupo='+grupo + "&ncontrol="+ncontrol,
+        dataType: 'json',
+        success: function (data){
+            if(data.respuesta){
+                resolve(data.cantidad);
+            }else{
+                console.log("Sin Respuesta");
+            }
+           
+        }
+    });
+});
+}
+
 
 function onclickaction(b){
 
@@ -115,7 +167,5 @@ var regresar = function () {
 }
 
 $("#btnRegresar").on("click", regresar)
-
-
 $("body").on("click","li > button",onclickaction);
 inicia();
