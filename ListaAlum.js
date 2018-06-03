@@ -7,18 +7,17 @@ const $ = require('jquery'),
     btnPDF = document.getElementById('botonPDF');
     //activar elemento click del btnPDF
     botonPDF.addEventListener('click',function(event){
-
     botonPDF.style.display ="none"
     ipc.send('print-to-pdf')
     });
 
     let pantallaDetalle;
-function datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno){
+    function datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno){
     this.ncontrol = ncontrol;
     this.nombre = nombre;
     this.apellidomaterno = apellidomaterno;
     this.apellidopaterno = apellidopaterno;
-}
+    }
 
 var token = '',
     usuario = '',
@@ -29,7 +28,7 @@ var token = '',
     numcontrol = '';
     var alumnosArray;
 
-    async function inicia() {
+async function inicia() {
 
     token = require('electron').remote.getGlobal('informacion').token,
     usuario = require('electron').remote.getGlobal('informacion').usuario,
@@ -42,7 +41,6 @@ var token = '',
    
     const alumnos = await primerPromesa();
     alumnos.shift();
-    console.log(alumnos)
     const faltasPromises = [];
     const asistenciasPromises = [];
     alumnosArray = [];
@@ -50,7 +48,6 @@ var token = '',
     for (const alumno of alumnos) {
       faltasPromises.push(contFaltas(materia, nombreMateria,grupo, alumno.ncontrol));
       asistenciasPromises.push(contAsistencias(materia,nombreMateria,grupo,alumno.ncontrol));
-      console.log(alumno.ncontrol)
     }
 
     const faltas = await Promise.all(faltasPromises);
@@ -64,7 +61,6 @@ var token = '',
         let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button onclick=clickaction(b) name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
         $("#lstAlumnos").append(resultado);
         alumnosArray.push(new datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno));
-  
     }
 
 }
@@ -102,8 +98,6 @@ function contFaltas (cveMateria,nombreMateria,grupo,ncontrol){
         });
         
     });
-   
-
 }
 
 function  contAsistencias (cveMateria,nombreMateria,grupo,ncontrol){

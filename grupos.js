@@ -37,7 +37,6 @@ async function inicia(){
   const grupos = await primerPromesa();
 
   grupos.shift();
-  console.log(grupos)
   const faltasPromises = [];
   const asistenciasPromises = [];
   materiaArray = [];
@@ -61,30 +60,6 @@ async function inicia(){
   }
 }
 
-/*
-for (var i = 1; i < data.grupos.length; i++) {
-    cveMateria = data.grupos[i].clavemateria;
-    nombreMateria = data.grupos[i].materia;
-    grupo = data.grupos[i].grupo;
-
-    materias[i] = new info(cveMateria, nombreMateria, grupo);
-   
-    contFaltas(cveMateria,nombreMateria,grupo).then((data) => {
-        f = "<li> FALTAS : "+data;
-        $("#faltasAsistencias").append(f);
-    }).catch((err) => {
-        console.log(err);
-    });
-
-    contAsistencias(cveMateria,nombreMateria,grupo).then((data) => {
-        a = "<li> FALTAS : "+data;
-        $("#faltasAsistencias").append(a);
-    }).catch((err) => {
-        console.log(err);
-    });
-}
-*/
-
 function primerPromesa () {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -101,6 +76,7 @@ function primerPromesa () {
      });
   });
 }
+
 function contFaltas (cveMateria,nombreMateria,grupo){
 
     return new Promise((resolve,reject) => {
