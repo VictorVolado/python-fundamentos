@@ -61,7 +61,7 @@ async function inicia() {
         const { ncontrol, nombre, apellidopaterno,apellidomaterno } = alum;
         var nombrecompleto = nombre + ' ' + apellidopaterno + ' ' + apellidomaterno;
 
-        let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button onclick=clickaction(b) name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
+        let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
         console.log(faltas[index]);
         
 
@@ -156,7 +156,7 @@ function onclickaction(b){
   
 
     $.ajax({
-        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/asignaincidencia.php?usuario='+usuario+'&usuariovalida='+token+'&periodoactual='+periodo+'&materia='+materia+'&grupo='+grupo+'&ncontrol='+alumnos[b.target.name]+'&incidencia='+incidenciaMandar,
+        url:'http://itculiacan.edu.mx/dadm/apipaselista/data/asignaincidencia.php?usuario='+usuario+'&usuariovalida='+token+'&periodoactual='+periodo+'&materia='+materia+'&grupo='+grupo+'&ncontrol='+alumnosArray[b.target.name]+'&incidencia='+incidenciaMandar,
         dataType: 'json',
         success: function (data) {
             if (data.respuesta) {
@@ -213,6 +213,8 @@ var regresar = function () {
     var window = require('electron').remote.getCurrentWindow();
     window.close();
 }
+
+
 function reporteLista() {
     let btn = $(this);
 
@@ -231,10 +233,34 @@ function reporteLista() {
     pantallaReporte.show();
 }
 
+function reporteAsistencias() {
 
-$("#btnAsistencias").on("click", reporteLista)
-$("#btnFaltas").on("click", reporteLista)
+    pantallaPase = new BrowserWindow({ width: 700, height: 600 });
+    pantallaPase.loadURL(url.format({
+        pathname: path.join(__dirname,'resporteAsistencias.html'),
+        protocol: 'file',
+        slashes: true
+    }));
 
+    //pantallaDetalle.webContents.openDevTools();
+    pantallaPase.show();
+}
+
+function reporteFaltas() {
+
+    pantallaPase = new BrowserWindow({ width: 700, height: 600 });
+    pantallaPase.loadURL(url.format({
+        pathname: path.join(__dirname,'reportaFaltas.html'),
+        protocol: 'file',
+        slashes: true
+    }));
+
+    //pantallaDetalle.webContents.openDevTools();
+    pantallaPase.show();
+}
+
+$("#btnAsistencias").on("click",reporteAsistencias)
+$("#btnAsistencias").on("click",reporteFaltas)
 $("#btnRegresar").on("click", regresar)
 $("body").on("click","li > button",onclickaction);
 inicia();
