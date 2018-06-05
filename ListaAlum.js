@@ -237,7 +237,7 @@ function reporteAsistencias() {
 
     pantallaPase = new BrowserWindow({ width: 700, height: 600 });
     pantallaPase.loadURL(url.format({
-        pathname: path.join(__dirname,'resporteAsistencias.html'),
+        pathname: path.join(__dirname,'reporteAsistencias.html'),
         protocol: 'file',
         slashes: true
     }));
@@ -250,7 +250,7 @@ function reporteFaltas() {
 
     pantallaPase = new BrowserWindow({ width: 700, height: 600 });
     pantallaPase.loadURL(url.format({
-        pathname: path.join(__dirname,'reportaFaltas.html'),
+        pathname: path.join(__dirname,'reporteFaltas.html'),
         protocol: 'file',
         slashes: true
     }));
@@ -260,7 +260,7 @@ function reporteFaltas() {
 }
 
 $("#btnAsistencias").on("click",reporteAsistencias)
-$("#btnAsistencias").on("click",reporteFaltas)
+$("#btnFaltas").on("click",reporteFaltas)
 $("#btnRegresar").on("click", regresar)
 $("body").on("click","li > button",onclickaction);
 inicia();
