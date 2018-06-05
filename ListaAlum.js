@@ -48,7 +48,10 @@ async function inicia() {
     for (const alumno of alumnos) {
       faltasPromises.push(contFaltas(materia, nombreMateria,grupo, alumno.ncontrol));
       asistenciasPromises.push(contAsistencias(materia,nombreMateria,grupo,alumno.ncontrol));
+
     }
+
+
 
     const faltas = await Promise.all(faltasPromises);
     const asistencias = await Promise.all(asistenciasPromises);
@@ -57,10 +60,19 @@ async function inicia() {
         const alum = alumnos[index];
         const { ncontrol, nombre, apellidopaterno,apellidomaterno } = alum;
         var nombrecompleto = nombre + ' ' + apellidopaterno + ' ' + apellidomaterno;
-        console.log(nombrecompleto)
+
         let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button onclick=clickaction(b) name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
         $("#lstAlumnos").append(resultado);
+
         alumnosArray.push(new datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno));
+       
+
+    }
+
+    for (alumno of alumnos){
+        await reporteAlumnoAsistencias(periodo,alumno.ncontrol,nombrecompleto, materia, grupo, alumno.asistencias);
+        await reporteAlumnoFaltas(periodo,alumno.ncontrol,nombrecompleto, materia, grupo, alumno.faltas);
+
     }
 
 }
@@ -155,10 +167,75 @@ function onclickaction(b){
     });
 }
 
+function reporteAlumnoAsistencias (periodo, numcontrol, nombre, materia, grupo, asistencias) {
+    return new Promise((resolve, reject) => {
+
+        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&asistencias=" + faltas +"&aleatorio=" + Math.random();
+
+
+        $.ajax({
+            
+            type: "POST",
+            dataType: "json",
+            url: "php/alumnosasistencias.php",
+            data: datos,
+            success: function (resolve) {
+                result(resolve)
+            },
+            error: function (xhr, ajaxOptions, thrown) {
+                console.log(xhr + ajaxOptions + thrown);
+                reject('Error')
+            }
+        })
+    })  
+}
+function reporteAlumnoFaltas (periodo, numcontrol, nombre, materia, grupo, asistencias) {
+    return new Promise((resolve, reject) => {
+
+        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&asistencias=" + faltas +"&aleatorio=" + Math.random();
+
+        $.ajax({
+            
+            type: "POST",
+            dataType: "json",
+            url: "php/alumnofaltas.php",
+            data: datos,
+            success: function (resolve) {
+                result(resolve)
+            },
+            error: function (xhr, ajaxOptions, thrown) {
+                console.log(xhr + ajaxOptions + thrown);
+                reject('Error')
+            }
+        })
+    })
+}
+
 var regresar = function () {
     var window = require('electron').remote.getCurrentWindow();
     window.close();
 }
+function reporteLista() {
+    let btn = $(this);
+
+    require('electron').remote.getGlobal('info').periodo = periodo;
+    require('electron').remote.getGlobal('info').cveMateria = materia;
+    require('electron').remote.getGlobal('info').grupo = grupo;
+    //require('electron').remote.getGlobal('info').reporte = btn[0].id; para que es esto e.e
+    
+
+    pantallaReporte = new BrowserWindow({ width: 1000, height: 800 });
+    pantallaReporte.loadURL(url.format({
+        pathname: path.join(__dirname, '../reporte.html'),
+        protocol: 'file',
+        slashes: true
+    }));
+    pantallaReporte.show();
+}
+
+
+$("#btnAsistencias").on("click", reporteLista)
+$("#btnFaltas").on("click", reporteLista)
 
 $("#btnRegresar").on("click", regresar)
 $("body").on("click","li > button",onclickaction);
