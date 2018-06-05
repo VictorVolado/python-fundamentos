@@ -62,18 +62,19 @@ async function inicia() {
         var nombrecompleto = nombre + ' ' + apellidopaterno + ' ' + apellidomaterno;
 
         let resultado = "<li>"+ nombrecompleto+" "+ncontrol+" Faltas :"+faltas[index]+" Asistencias :"+asistencias[index]+'<button onclick=clickaction(b) name=' +index+ ' id=Falta' + index + ' class="falta">Falta</button>' + '<button onclick=clickaction(b) name = ' + index + ' id=Asistencia' + index + ' class="asistencia">Asistencia</button>';
+        console.log(faltas[index]);
+        
+
         $("#lstAlumnos").append(resultado);
+        reporteAlumnoAsistencias(periodo,ncontrol,nombrecompleto, materia, grupo, asistencias[index]);
+        reporteAlumnoFaltas(periodo,ncontrol,nombrecompleto, materia, grupo, faltas[index]);
 
         alumnosArray.push(new datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno));
        
 
     }
 
-    for (alumno of alumnos){
-        await reporteAlumnoAsistencias(periodo,alumno.ncontrol,nombrecompleto, materia, grupo, alumno.asistencias);
-        await reporteAlumnoFaltas(periodo,alumno.ncontrol,nombrecompleto, materia, grupo, alumno.faltas);
-
-    }
+    
 
 }
 
@@ -168,47 +169,44 @@ function onclickaction(b){
 }
 
 function reporteAlumnoAsistencias (periodo, numcontrol, nombre, materia, grupo, asistencias) {
-    return new Promise((resolve, reject) => {
-
-        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&asistencias=" + faltas +"&aleatorio=" + Math.random();
-
-
+        var datos = "opc=alumnoAsistencias" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&asistencias=" + asistencias +"&aleatorio=" + Math.random();
+        console.log(datos);
         $.ajax({
             
             type: "POST",
             dataType: "json",
-            url: "php/alumnosasistencias.php",
+            url: "http://localhost/python-fundamentos/php/alumnosasistencias.php",
             data: datos,
-            success: function (resolve) {
-                result(resolve)
+            success: function (data) {
+                console.log(data)
             },
             error: function (xhr, ajaxOptions, thrown) {
                 console.log(xhr + ajaxOptions + thrown);
-                reject('Error')
+                
             }
         })
-    })  
+     
 }
-function reporteAlumnoFaltas (periodo, numcontrol, nombre, materia, grupo, asistencias) {
-    return new Promise((resolve, reject) => {
+function reporteAlumnoFaltas (periodo, numcontrol, nombre, materia, grupo,faltas) {
+    
 
-        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&asistencias=" + faltas +"&aleatorio=" + Math.random();
+        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo +"&ncontrol=" + numcontrol + "&nombre=" + nombre +"&materia=" + materia +"&grupo=" + grupo +"&faltas=" + faltas +"&aleatorio=" + Math.random();
 
         $.ajax({
             
             type: "POST",
             dataType: "json",
-            url: "php/alumnofaltas.php",
+            url: "http://localhost/python-fundamentos/php/alumnofaltas.php",
             data: datos,
-            success: function (resolve) {
-                result(resolve)
+            success: function (data) {
+                console.log(data)
             },
             error: function (xhr, ajaxOptions, thrown) {
                 console.log(xhr + ajaxOptions + thrown);
-                reject('Error')
+                
             }
         })
-    })
+    
 }
 
 var regresar = function () {
