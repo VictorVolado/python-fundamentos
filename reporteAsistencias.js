@@ -49,4 +49,10 @@ function inicia(){
             }
         });
 }
+var regresar = function () {
+    var window = require('electron').remote.getCurrentWindow();
+    window.close();
+}
+
+$("#btnRegresar").on("click", regresar)
 inicia();
