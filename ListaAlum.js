@@ -217,9 +217,9 @@ var regresar = function () {
 function reporteLista() {
     let btn = $(this);
 
-    require('electron').remote.getGlobal('info').periodo = periodo;
-    require('electron').remote.getGlobal('info').cveMateria = materia;
-    require('electron').remote.getGlobal('info').grupo = grupo;
+    require('electron').remote.getGlobal('informacion').periodo = periodo;
+    require('electron').remote.getGlobal('informacion').cveMateria = materia;
+    require('electron').remote.getGlobal('informacion').grupo = grupo;
     //require('electron').remote.getGlobal('info').reporte = btn[0].id; para que es esto e.e
     
 

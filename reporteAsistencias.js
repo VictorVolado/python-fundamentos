@@ -7,24 +7,21 @@ url = require('url')
 const ipc = require('electron').ipcRenderer
 const botonPDF = document.getElementById('btnPDF')
 //activar elemento click del btnPDF
-botonPDF.addEventListener('click',function(event){
-
-    botonPDF.style.display ="none"
-    ipc.send('print-to-pdf')
-
-});
 
 function inicia(){
 
     reporteAlumnoFaltas();
 }
     function reporteAlumnoFaltas () {
-        
-        require('electron').remote.getGlobal('info').periodo = periodo;
-        require('electron').remote.getGlobal('info').cveMateria = materia;
-        require('electron').remote.getGlobal('info').grupo = grupo;
+        var periodo;
+        var materia;
+        var grupo;
 
-        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo+"&materia=" + materia +"&grupo=" + grupo;
+       periodo= require('electron').remote.getGlobal('informacion').periodo;
+       materia= require('electron').remote.getGlobal('informacion').claveMateria;
+       grupo= require('electron').remote.getGlobal('informacion').grupo;
+
+        var datos = "opc=ListaAsistencias" +"&periodo=" + periodo+"&materia=" + materia +"&grupo=" + grupo;
 
         $.ajax({
             
