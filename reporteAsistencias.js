@@ -5,9 +5,14 @@ path = require('path')
 url = require('url')
 //constantes para pdf
 const ipc = require('electron').ipcRenderer
-const botonPDF = document.getElementById('btnPDF')
+const botonPDF = document.getElementById('botonPDF')
 //activar elemento click del btnPDF
+botonPDF.addEventListener('click',function(event){
 
+    botonPDF.style.display ="none"
+    ipc.send('print-to-pdf')
+
+});
 function inicia(){
 
     reporteAlumnoFaltas();
@@ -22,7 +27,7 @@ function inicia(){
        grupo= require('electron').remote.getGlobal('informacion').grupo;
 
         var datos = "opc=ListaAsistencias" +"&periodo=" + periodo+"&materia=" + materia +"&grupo=" + grupo;
-
+        var resultado="";
         $.ajax({
             
             type: "POST",
@@ -30,7 +35,13 @@ function inicia(){
             url: "http://localhost/python-fundamentos/php/ListadoAsistencias.php",
             data: datos,
             success: function (data) {
-                console.log(data);
+                for(var i = 0; i<data.alumnos.length;i++){
+                    resultado += "<li>"+data.alumnos[i].nombre+" "+data.alumnos[i].ncontrol+"    Asistencias:  "+data.alumnos[i].asistencias;
+                    
+                
+                }
+
+                $("#ltsReporteAsistencias").html(resultado);
             },
             error: function (xhr, ajaxOptions, thrown) {
                 console.log(xhr + ajaxOptions + thrown);

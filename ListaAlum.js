@@ -1,15 +1,18 @@
-const $ = require('jquery'),
-    { BrowserWindow } = require('electron').remote,
-    app = require('electron').app,
-    path = require('path'),
-    url = require('url'),
-    ipc = require('electron').ipcRenderer
-    btnPDF = document.getElementById('botonPDF');
-    //activar elemento click del btnPDF
-    botonPDF.addEventListener('click',function(event){
+const $ = require('jquery')
+const {BrowserWindow} = require('electron').remote
+app = require('electron').app
+path = require('path')
+url = require('url')
+//constantes para pdf
+const ipc = require('electron').ipcRenderer
+const botonPDF = document.getElementById('botonPDF')
+//activar elemento click del btnPDF
+botonPDF.addEventListener('click',function(event){
+
     botonPDF.style.display ="none"
     ipc.send('print-to-pdf')
-    });
+
+});
 
     let pantallaDetalle;
     function datosAlumnos(ncontrol,nombre,apellidopaterno,apellidomaterno){

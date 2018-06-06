@@ -5,7 +5,7 @@ path = require('path')
 url = require('url')
 //constantes para pdf
 const ipc = require('electron').ipcRenderer
-const botonPDF = document.getElementById('btnPDF')
+const botonPDF = document.getElementById('botonPDF')
 //activar elemento click del btnPDF
 botonPDF.addEventListener('click',function(event){
 
@@ -13,8 +13,42 @@ botonPDF.addEventListener('click',function(event){
     ipc.send('print-to-pdf')
 
 });
-
 function inicia(){
-    
+    reporteAlumnoFaltas();
 }
 
+
+function reporteAlumnoFaltas () {
+    var periodo;
+    var materia;
+    var grupo;
+
+   periodo= require('electron').remote.getGlobal('informacion').periodo;
+   materia= require('electron').remote.getGlobal('informacion').claveMateria;
+   grupo= require('electron').remote.getGlobal('informacion').grupo;
+
+    var datos = "opc=ListaFaltas" +"&periodo=" + periodo+"&materia=" + materia +"&grupo=" + grupo;
+    var resultado="";
+
+    $.ajax({
+        
+        type: "POST",
+        dataType: "json",
+        url: "http://localhost/python-fundamentos/php/ListadoFaltas.php",
+        data: datos,
+        success: function (data) {
+            for(var i = 0; i<data.alumnos.length;i++){
+                resultado += "<li>"+data.alumnos[i].nombre+" "+data.alumnos[i].ncontrol+"    Faltas:  "+data.alumnos[i].faltas;
+                
+            
+            }
+
+            $("#ltsReporteFaltas").html(resultado);
+        },
+        error: function (xhr, ajaxOptions, thrown) {
+            console.log(xhr + ajaxOptions + thrown);
+            
+        }
+    });
+}
+inicia();
