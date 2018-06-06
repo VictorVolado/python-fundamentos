@@ -4,6 +4,14 @@
 
 }
 
+body{
+	
+	color: black;
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+	
+	max-width: 1024px;
+}
+
 #btnRegresar{
 	float:right;
 	position: relative;	
@@ -15,36 +23,6 @@
 	background-color: #007a99;
 	color:white;
 	padding: 10px 10px;
-
-}
-
-#btnFaltas{
-	float:left;
-	position: relative;	
-	border-radius: 7px;
-	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
-	box-shadow: none;
-	border-style: double;
-	margin-right: 70px;
-	background-color: #007a99;
-	color:white;
-	margin-right: 20px;
-	padding: 10px 10px;
-
-}
-#btnAsistencias{
-	float:left;
-	position: relative;	
-	border-radius: 7px;
-	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
-	box-shadow: none;
-	border-style: double;
-	margin-right: 70px;
-	background-color: #007a99;
-	color:white;
-	margin-right: 20px;
-	padding: 10px 10px;
-
 
 }
 #botonPDF{
@@ -61,6 +39,28 @@
 	padding: 10px 10px;
 
 }
+
+ul{
+	margin: 0 auto;
+	
+	list-style-type: none;
+	background-color: #b3ccff;
+
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+
+	border-radius: 5px;
+	padding-bottom: 24px;
+	padding-top: 5px;
+	margin-left: 5px;
+	
+}
+ul li{
+	margin-top:13px;
+	background-color: #b3ccff;
+
+
+}
+
 li{
 	margin-top: 2px;
 	padding-top: 5px;
@@ -71,14 +71,4 @@ li{
 	background-color: #b3ccff;
 
 }
- li button{
-	float:right;
-	border-radius: 7px;
-	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
-	box-shadow: none;
-	border-style: double;
-	
-	background-color: #007a99;
-	color:white;
-		
-}	
+
