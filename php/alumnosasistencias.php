@@ -3,12 +3,12 @@
     function asistencias () {
         $con = conecta();
         
-        $grupo = GetSQLValueString($_POST["grupo"], "text");
-        $asistencias = GetSQLValueString($_POST["asistencias"], "int");
-        $periodo = GetSQLValueString($_POST["periodo"], "text");
-        $ncontrol= GetSQLValueString($_POST["ncontrol"], "text");        
-        $nombre = GetSQLValueString($_POST["nombre"], "text");
-        $materia = GetSQLValueString($_POST["materia"], "text");
+        $grupo = GetSQLValueString($_POST["grupo"], "text",$con);
+        $asistencias = GetSQLValueString($_POST["asistencias"], "int",$con);
+        $periodo = GetSQLValueString($_POST["periodo"], "text",$con);
+        $ncontrol= GetSQLValueString($_POST["ncontrol"], "text",$con);        
+        $nombre = GetSQLValueString($_POST["nombre"], "text",$con);
+        $materia = GetSQLValueString($_POST["materia"], "text",$con);
         $QueryAsistencia = "";
         $res = false;
         $query = sprintf("SELECT * FROM reportealumnos WHERE periodo = %s AND ncontrol = %s LIMIT 1;", $periodo, $ncontrol);

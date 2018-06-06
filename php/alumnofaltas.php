@@ -3,12 +3,12 @@
     function faltas () {
         $con = conecta();
         
-        $grupo = GetSQLValueString($_POST["grupo"], "text");
-        $faltas = GetSQLValueString($_POST["faltas"], "int");
-        $periodo = GetSQLValueString($_POST["periodo"], "text");
-        $ncontrol= GetSQLValueString($_POST["ncontrol"], "text");        
-        $nombre = GetSQLValueString($_POST["nombre"], "text");
-        $materia = GetSQLValueString($_POST["materia"], "text");
+        $grupo = GetSQLValueString($_POST["grupo"], "text",$con);
+        $faltas = GetSQLValueString($_POST["faltas"], "int",$con);
+        $periodo = GetSQLValueString($_POST["periodo"], "text",$con);
+        $ncontrol= GetSQLValueString($_POST["ncontrol"], "text",$con);        
+        $nombre = GetSQLValueString($_POST["nombre"], "text",$con);
+        $materia = GetSQLValueString($_POST["materia"], "text",$con);
         $QueryFaltas = "";
         $res = false;
         $query = sprintf("SELECT * FROM reportealumnos WHERE periodo = %s AND ncontrol = %s LIMIT 1;", $periodo, $ncontrol);
@@ -17,7 +17,7 @@
         if (mysqli_num_rows($res_consulta) > 0) {
             $QueryFaltas = sprintf("UPDATE reportealumnos SET faltas = %s WHERE periodo = %s AND ncontrol = %s;", $faltas, $periodo, $ncontrol);
         } else {
-            $QueryFaltas = sprintf("INSERT INTO reportealumnos VALUES (default, %s,%s, %s, %s, %s, 0, %s);", $periodo, $ncontrol, $nombre, $materia, $grupo, $asistencias);
+            $QueryFaltas = sprintf("INSERT INTO reportealumnos VALUES (default, %s,%s, %s, %s, %s, 0, %s);", $periodo, $ncontrol, $nombre, $materia, $grupo, $faltas);
         }
 
         

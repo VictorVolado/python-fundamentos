@@ -8,9 +8,9 @@
     $ncontrol="";
     $alumnos= array();
 
-    $grupo = GetSQLValueString($_POST["grupo"], "text");
-    $materia = GetSQLValueString($_POST["materia"], "text");
-    $periodo = GetSQLValueString($_POST["periodo"], "text");
+    $grupo = GetSQLValueString($_POST["grupo"], "text", $con);
+    $materia = GetSQLValueString($_POST["materia"], "text", $con);
+    $periodo = GetSQLValueString($_POST["periodo"], "text", $con);
 
     $queryListadoFaltas=sprintf("SELECT ncontrol,nombre,faltas FROM reportealumnos=%s AND materia=%s AND grupo =%s ORDER BY faltas DESC",$periodo,$materia,$grupo);
 
