@@ -17,3 +17,4 @@ botonPDF.addEventListener('click',function(event){
 function inicia(){
     
 }
+
