@@ -6,6 +6,7 @@
     $nombre="";
     $asistencias="";
     $ncontrol="";
+    $alumnos= array();
     $grupo = GetSQLValueString($_POST["grupo"], "text");
     $materia = GetSQLValueString($_POST["materia"], "text");
     $periodo = GetSQLValueString($_POST["periodo"], "text");
@@ -20,11 +21,11 @@
             $nombre=utf8_encode($regConsulta["nombre"]);
             $ncontrol  = $regConsulta["ncontrol"];
             $asistencias=$regConsulta["asistencias"];
-
+            $alumnos[] =  array('nombre'=> $nombre,'ncontrol' => $ncontrol,'asistencias'=>$asistencias );
     }
 }
 
-$salidaJSON = array('res' => $res,'nombre'=> $nombre,'ncontrol' => $ncontrol,'asistencias'=>$asistencias );
+$salidaJSON = array('res' => $res, 'alumnos' => $alumnos);
 }
 $opc = $_POST["opc"];
 switch ($opc) {

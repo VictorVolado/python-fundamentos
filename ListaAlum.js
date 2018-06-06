@@ -184,7 +184,7 @@ function reporteAlumnoAsistencias (periodo, numcontrol, nombre, materia, grupo, 
                 console.log(xhr + ajaxOptions + thrown);
                 
             }
-        })
+        });
      
 }
 function reporteAlumnoFaltas (periodo, numcontrol, nombre, materia, grupo,faltas) {
@@ -205,8 +205,7 @@ function reporteAlumnoFaltas (periodo, numcontrol, nombre, materia, grupo,faltas
                 console.log(xhr + ajaxOptions + thrown);
                 
             }
-        })
-    
+        });
 }
 
 var regresar = function () {

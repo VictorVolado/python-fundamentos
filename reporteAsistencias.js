@@ -15,5 +15,26 @@ botonPDF.addEventListener('click',function(event){
 });
 
 function inicia(){
+
+
+    function reporteAlumnoFaltas (periodo, materia, grupo) {
     
+
+        var datos = "opc=alumnoFaltas" +"&periodo=" + periodo+"&materia=" + materia +"&grupo=" + grupo;
+
+        $.ajax({
+            
+            type: "POST",
+            dataType: "json",
+            url: "http://localhost/python-fundamentos/php/ListadoFaltas.php",
+            data: datos,
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (xhr, ajaxOptions, thrown) {
+                console.log(xhr + ajaxOptions + thrown);
+                
+            }
+        });
+}
 }
